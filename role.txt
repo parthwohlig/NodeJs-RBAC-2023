@@ -1,0 +1,4 @@
+user - create, read 
+moderator - read, create, update 
+admin - read , create , update , delete
+and above all 3 roles are created by super admin
