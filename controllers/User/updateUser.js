@@ -4,7 +4,6 @@ const __constants = require('../../config/constants')
 const validationOfAPI = require('../../middlewares/validation')
 const User = require('../../services/userService')
 const { checkUserPermission } = require('../../middlewares/auth/access')
-// const Access = require('../../middlewares/auth/access')
 // const cache = require('../../middlewares/requestCacheMiddleware') // uncomment the statement whenever the redis cache is in use.
 
 const validationSchema = {

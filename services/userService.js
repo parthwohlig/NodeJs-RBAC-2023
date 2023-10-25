@@ -1,7 +1,6 @@
 const User = require('../mongooseSchema/userSchema')
-// const authentication = require('../middlewares/auth/authentication')
 const bcrypt = require('bcrypt')
-// const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken')
 const token = require('../middlewares/auth/authentication')
 
 class UserClass {
@@ -71,7 +70,15 @@ class UserClass {
 
   async getUser (req) {
     try {
+      const token = req.headers.authorization
       const userId = req.params.userid
+      const decoded = jwt.verify(
+        token,
+        process.env.AUTHENTICATION_JWT_SECRET_KEY
+      )
+      if (decoded.data.userId !== userId) {
+        return 'Token doesnt match your details'
+      }
       const user = await User.findById(userId)
       if (!user) {
         return 'User does not exist'
@@ -85,10 +92,21 @@ class UserClass {
 
   async updateUser (req) {
     try {
+      const token = req.headers.authorization
       const update = req.body
       const userId = req.params.userid
+      const decoded = jwt.verify(
+        token,
+        process.env.AUTHENTICATION_JWT_SECRET_KEY
+      )
+      if (decoded.data.userId !== userId) {
+        return 'Token doesnt match your update details'
+      }
       await User.findByIdAndUpdate(userId, update)
       const user = await User.findById(userId)
+      if (!user) {
+        return 'User does not exists'
+      }
       return `User has been updated ${user}`
     } catch (error) {
       console.error('Error in updating User', error)
@@ -99,6 +117,14 @@ class UserClass {
   async deleteUser (req) {
     try {
       const userId = req.params.userid
+      const token = req.headers.authorization
+      const decoded = jwt.verify(
+        token,
+        process.env.AUTHENTICATION_JWT_SECRET_KEY
+      )
+      if (decoded.data.userId !== userId) {
+        return 'Token doesnt match your delete details'
+      }
       await User.findByIdAndDelete(userId)
       return 'User has been deleted'
     } catch (error) {
