@@ -16,7 +16,6 @@ class CommentService {
     try {
       const userId = this.getUserIdnPostId(req)
       const { comment, postId } = req.body
-      console.log(req.body)
       const newComment = new Comment({
         comment: comment,
         postId: postId,
@@ -33,6 +32,9 @@ class CommentService {
   async getComment (req) {
     try {
       const getComment = await Comment.findById(req.params.id)
+      if (!getComment) {
+        return 'No Comment found'
+      }
       return getComment
     } catch (error) {
       console.log('Error in getting Comment', error)
@@ -42,11 +44,25 @@ class CommentService {
 
   async updateComment (req) {
     try {
+      const token = req.headers.authorization
+      const decoded = jwt.verify(
+        token,
+        process.env.AUTHENTICATION_JWT_SECRET_KEY
+      )
+      const userId = decoded.data.userId
+      const commentId = req.params.id
+      const findUserId = await Comment.findOne({ _id: commentId })
+      if (findUserId.userId !== userId) {
+        return 'Youre not owner of this comment'
+      }
       const updateComment = await Comment.findByIdAndUpdate(
         req.params.id,
         req.body,
         { new: true }
       )
+      if (!updateComment) {
+        return 'No comment found'
+      }
       return updateComment
     } catch (error) {
       console.log('Error in updating Comment', error)
@@ -56,7 +72,22 @@ class CommentService {
 
   async deleteComment (req) {
     try {
+      const token = req.headers.authorization
+      const decoded = jwt.verify(
+        token,
+        process.env.AUTHENTICATION_JWT_SECRET_KEY
+      )
+      const userId = decoded.data.userId
+      const commentId = req.params.id
+      const findUserId = await Comment.findOne({ _id: commentId })
+      if (findUserId.userId !== userId) {
+        return 'Youre not owner of this comment'
+      }
+
       const deleteComment = await Comment.findByIdAndDelete(req.params.id)
+      if (!deleteComment) {
+        return 'No such Comment found'
+      }
       return `Comment successfully deleted ${deleteComment}`
     } catch (error) {
       console.log(`Error deleteing Comment with ${req.params.id}`)

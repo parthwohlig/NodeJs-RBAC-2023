@@ -40,9 +40,23 @@ class PostService {
 
   async updatePost (req) {
     try {
-      const updatePost = await Post.findByIdAndUpdate(req.params.id, req.body, {
+      const token = req.headers.authorization
+      const decoded = jwt.verify(
+        token,
+        process.env.AUTHENTICATION_JWT_SECRET_KEY
+      )
+      const userId = decoded.data.userId
+      const postId = req.params.id
+      const findPostId = await Post.findOne({ _id: postId })
+      if (findPostId.userId !== userId) {
+        return 'Youre not owner of this post'
+      }
+      const updatePost = await Post.findByIdAndUpdate(postId, req.body, {
         new: true
       })
+      if (!updatePost) {
+        return 'No Post found'
+      }
       return updatePost
     } catch (error) {
       console.log('Error in updating Post', error)
@@ -52,7 +66,21 @@ class PostService {
 
   async deletePost (req) {
     try {
-      const deletePost = await Post.findByIdAndDelete(req.params.id)
+      const token = req.headers.authorization
+      const decoded = jwt.verify(
+        token,
+        process.env.AUTHENTICATION_JWT_SECRET_KEY
+      )
+      const userId = decoded.data.userId
+      const postId = req.params.id
+      const findPostId = await Post.findOne({ _id: postId })
+      if (findPostId.userId !== userId) {
+        return 'Youre not owner of this post'
+      }
+      const deletePost = await Post.findByIdAndDelete(postId)
+      if (!deletePost) {
+        return 'No Such Post found'
+      }
       return `Post successfully deleted ${deletePost}`
     } catch (error) {
       console.log(`error deleteing post with ${req.params.id}`)

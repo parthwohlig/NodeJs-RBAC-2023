@@ -125,7 +125,10 @@ class UserClass {
       if (decoded.data.userId !== userId) {
         return 'Token doesnt match your delete details'
       }
-      await User.findByIdAndDelete(userId)
+      const deleteUser = await User.findByIdAndDelete(userId)
+      if (!deleteUser) {
+        return 'User not found'
+      }
       return 'User has been deleted'
     } catch (error) {
       console.error('Error in deleting user', error)
