@@ -3,7 +3,7 @@ const router = express.Router()
 const __constants = require('../../config/constants')
 const validationOfAPI = require('../../middlewares/validation')
 const User = require('../../services/userService')
-const { checkUserPermission } = require('../../middlewares/auth/access')
+const superAdmin = require('../../middlewares/auth/superAdminAccess')
 // const Access = require('../../middlewares/auth/access')
 // const cache = require('../../middlewares/requestCacheMiddleware') // uncomment the statement whenever the redis cache is in use.
 
@@ -32,7 +32,7 @@ const deleteUser = async (req, res) => {
 
 router.delete(
   '/:userid',
-  checkUserPermission,
+  superAdmin,
   validation,
   deleteUser
 )

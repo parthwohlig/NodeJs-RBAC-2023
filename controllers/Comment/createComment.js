@@ -3,8 +3,7 @@ const router = express.Router()
 const __constants = require('../../config/constants')
 const validationOfAPI = require('../../middlewares/validation')
 const Comment = require('../../services/commentService')
-const { checkReadPermission } = require('../../middlewares/auth/access')
-const authentication = require('../../middlewares/auth/authentication')
+const { checkCreatePermission } = require('../../middlewares/auth/access')
 // const cache = require('../../middlewares/requestCacheMiddleware') // uncomment the statement whenever the redis cache is in use.
 
 const validationSchema = {
@@ -32,8 +31,7 @@ const createComment = async (req, res) => {
 
 router.post(
   '/create',
-  authentication.authenticate('jwt', { session: false }),
-  checkReadPermission,
+  checkCreatePermission,
   validation,
   createComment
 )

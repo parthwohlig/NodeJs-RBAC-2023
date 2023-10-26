@@ -4,7 +4,6 @@ const __constants = require('../../config/constants')
 const validationOfAPI = require('../../middlewares/validation')
 const Post = require('../../services/postService')
 const { checkDeletePermission } = require('../../middlewares/auth/access')
-const authentication = require('../../middlewares/auth/authentication')
 // const cache = require('../../middlewares/requestCacheMiddleware') // uncomment the statement whenever the redis cache is in use.
 
 const validationSchema = {
@@ -32,7 +31,6 @@ const deletePost = async (req, res) => {
 
 router.delete(
   '/deletePost/:id',
-  authentication.authenticate('jwt', { session: false }),
   checkDeletePermission,
   validation,
   deletePost

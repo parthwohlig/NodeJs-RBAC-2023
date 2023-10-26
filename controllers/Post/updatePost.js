@@ -4,7 +4,6 @@ const __constants = require('../../config/constants')
 const validationOfAPI = require('../../middlewares/validation')
 const Post = require('../../services/postService')
 const { checkUpdatePermission } = require('../../middlewares/auth/access')
-const authentication = require('../../middlewares/auth/authentication')
 // const cache = require('../../middlewares/requestCacheMiddleware') // uncomment the statement whenever the redis cache is in use.
 
 const validationSchema = {
@@ -31,7 +30,6 @@ const updatePost = async (req, res) => {
 
 router.patch(
   '/updatePost/:id',
-  authentication.authenticate('jwt', { session: false }),
   checkUpdatePermission,
   validation,
   updatePost

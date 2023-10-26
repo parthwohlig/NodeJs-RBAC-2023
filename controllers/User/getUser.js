@@ -3,8 +3,7 @@ const router = express.Router()
 const __constants = require('../../config/constants')
 const validationOfAPI = require('../../middlewares/validation')
 const User = require('../../services/userService')
-const { checkUserPermission } = require('../../middlewares/auth/access')
-const authentication = require('../../middlewares/auth/authentication')
+const { checkReadPermission } = require('../../middlewares/auth/access')
 // const Access = require('../../middlewares/auth/access')
 // const cache = require('../../middlewares/requestCacheMiddleware') // uncomment the statement whenever the redis cache is in use.
 
@@ -31,6 +30,6 @@ const getUser = async (req, res) => {
   }
 }
 
-router.get('/:userid', checkUserPermission, validation, getUser)
+router.get('/:userid', checkReadPermission, validation, getUser)
 // router.post('/postPing', cache.route(100), validation, ping) // example for redis cache in routes
 module.exports = router
