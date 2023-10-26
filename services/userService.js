@@ -76,7 +76,7 @@ class UserClass {
         token,
         process.env.AUTHENTICATION_JWT_SECRET_KEY
       )
-      if (decoded.data.userId !== userId) {
+      if (decoded.data.userId !== userId && decoded.data.role !== 'superadmin') {
         return 'Token doesnt match your details'
       }
       const user = await User.findById(userId)
@@ -99,14 +99,20 @@ class UserClass {
         token,
         process.env.AUTHENTICATION_JWT_SECRET_KEY
       )
-      if (decoded.data.userId !== userId) {
-        return 'Token doesnt match your update details'
+      if (decoded.data.userId !== userId && decoded.data.role !== 'superadmin') {
+        return 'Token doesnt match your login details'
+      }
+      if (update.password) {
+        const hashedPassword = await bcrypt.hash(update.password, 10)
+        update.password = hashedPassword
       }
       await User.findByIdAndUpdate(userId, update)
       const user = await User.findById(userId)
       if (!user) {
         return 'User does not exists'
       }
+      console.log(user)
+
       return `User has been updated ${user}`
     } catch (error) {
       console.error('Error in updating User', error)
@@ -122,8 +128,8 @@ class UserClass {
         token,
         process.env.AUTHENTICATION_JWT_SECRET_KEY
       )
-      if (decoded.data.userId !== userId) {
-        return 'Token doesnt match your delete details'
+      if (decoded.data.userId !== userId && decoded.data.role !== 'superadmin') {
+        return 'Token doesnt match your login details'
       }
       const deleteUser = await User.findByIdAndDelete(userId)
       if (!deleteUser) {

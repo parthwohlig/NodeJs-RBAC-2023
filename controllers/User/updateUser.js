@@ -22,6 +22,7 @@ const update = async (req, res) => {
     const user = await User.updateUser(req)
     res.sendJson({ type: __constants.RESPONSE_MESSAGES.SUCCESS, data: user })
   } catch (err) {
+    console.log(err)
     return res.sendJson({
       type: err.type || __constants.RESPONSE_MESSAGES.SERVER_ERROR,
       err: err.err || err

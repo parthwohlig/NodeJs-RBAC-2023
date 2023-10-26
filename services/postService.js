@@ -48,7 +48,7 @@ class PostService {
       const userId = decoded.data.userId
       const postId = req.params.id
       const findPostId = await Post.findOne({ _id: postId })
-      if (findPostId.userId !== userId) {
+      if (findPostId.userId !== userId && decoded.data.role !== 'superadmin') {
         return 'Youre not owner of this post'
       }
       const updatePost = await Post.findByIdAndUpdate(postId, req.body, {
@@ -74,7 +74,7 @@ class PostService {
       const userId = decoded.data.userId
       const postId = req.params.id
       const findPostId = await Post.findOne({ _id: postId })
-      if (findPostId.userId !== userId) {
+      if (findPostId.userId !== userId && decoded.data.role !== 'superadmin') {
         return 'Youre not owner of this post'
       }
       const deletePost = await Post.findByIdAndDelete(postId)

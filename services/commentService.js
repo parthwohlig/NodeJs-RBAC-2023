@@ -52,7 +52,7 @@ class CommentService {
       const userId = decoded.data.userId
       const commentId = req.params.id
       const findUserId = await Comment.findOne({ _id: commentId })
-      if (findUserId.userId !== userId) {
+      if (findUserId.userId !== userId && decoded.data.role !== 'superadmin') {
         return 'Youre not owner of this comment'
       }
       const updateComment = await Comment.findByIdAndUpdate(
@@ -80,7 +80,7 @@ class CommentService {
       const userId = decoded.data.userId
       const commentId = req.params.id
       const findUserId = await Comment.findOne({ _id: commentId })
-      if (findUserId.userId !== userId) {
+      if (findUserId.userId !== userId && decoded.data.role !== 'superadmin') {
         return 'Youre not owner of this comment'
       }
 
