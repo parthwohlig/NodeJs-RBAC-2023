@@ -129,28 +129,3 @@ exports.checkDeletePermission = (req, res, next) => {
     }
   )
 }
-
-// exports.allowIfLoggedin = async (req, res, next) => {
-//   try {
-//     if (req.headers['JWT-Token']) {
-//       const accessToken = req.headers['JWT-Token']
-//       const { userId, exp } = await jwt.verify(
-//         accessToken,
-//         process.env.JWT_SECRET
-//       )
-//       if (exp < Date.now().valueOf() / 1000) {
-//         return res.status(401).json({
-//           error: 'JWT token has expired, please login to obtain a new one'
-//         })
-//       }
-//       res.locals.loggedInUser = await User.findById(userId)
-//       console.log(res.locals.loggedInUser)
-//       next()
-//     } else {
-//       next()
-//     }
-//   } catch (error) {
-//     console.error('error in allowIfLoggedin', error)
-//     return res.status(500).send('Internal server error')
-//   }
-// }
